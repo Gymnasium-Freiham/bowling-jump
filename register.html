@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrieren</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
     <header class="bg-dark text-white p-3">
@@ -14,42 +31,62 @@
     </header>
 
     <main class="container my-5">
-        <form id="registerForm" class="w-50 mx-auto">
-            <div class="mb-3">
-                <label for="username" class="form-label">Benutzername</label>
-                <input type="text" id="username" name="username" class="form-control" required>
+        <div class="form-container mx-auto w-50">
+            <div class="form-header">
+                <h2>Erstellen Sie ein Konto</h2>
+                <p>Füllen Sie die folgenden Felder aus, um sich zu registrieren.</p>
             </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">E-Mail</label>
-                <input type="email" id="email" name="email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Passwort</label>
-                <input type="password" id="password" name="password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Registrieren</button>
-        </form>
-        <p id="registerMessage" class="text-center mt-3"></p>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Benutzername</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Ihr Benutzername" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-Mail</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Ihre E-Mail-Adresse" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Passwort</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Ihr Passwort" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Registrieren</button>
+            </form>
+            <p id="registerMessage" class="text-center mt-3"></p>
+        </div>
     </main>
 
-    <script>document.getElementById('registerForm').addEventListener('submit', async (event) => {
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (event) => {
             event.preventDefault();
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             try {
-                const response = await fetch('/new_register', {
+                const response = await fetch('https://api-mintai.ddns.net:443/new_register', { // Passen Sie die URL an Ihr Backend an
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, email, password })
                 });
 
                 const data = await response.json();
-                document.getElementById('registerMessage').textContent = data.message || data.error;
+                if (response.ok) {
+                    document.getElementById('registerMessage').textContent = 'Registrierung erfolgreich!';
+                    document.getElementById('registerMessage').classList.add('text-success');
+                    // Weiterleitung zur Login-Seite
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    document.getElementById('registerMessage').textContent = data.error || 'Registrierung fehlgeschlagen.';
+                    document.getElementById('registerMessage').classList.add('text-danger');
+                }
             } catch (error) {
                 console.error('Fehler:', error);
+                document.getElementById('registerMessage').textContent = 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.';
+                document.getElementById('registerMessage').classList.add('text-danger');
             }
-        });</script>
+        });
+    </script>
 </body>
 </html>
