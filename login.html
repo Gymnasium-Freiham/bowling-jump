@@ -45,7 +45,7 @@
                     document.getElementById('loginMessage').textContent = 'Erfolgreich angemeldet!';
                     document.getElementById('loginMessage').classList.add('text-success');
                     // Weiterleitung zur Profilseite
-                    window.location.href = `/profile/${data.user_id}`;
+                    window.location.href = `https://api-mintai.ddns.net:443/profile/${data.user_id}`;
                 } else {
                     document.getElementById('loginMessage').textContent = data.error || 'Anmeldung fehlgeschlagen.';
                     document.getElementById('loginMessage').classList.add('text-danger');
